@@ -1,110 +1,110 @@
 class KakaoBookSearchModel {
+  List<Documents> documents;
   Meta meta;
-  List<Documents> documents; //검색결과 리스트
 
-  KakaoBookSearchModel({this.meta, this.documents});
+  KakaoBookSearchModel({this.documents, this.meta});
 
   KakaoBookSearchModel.fromJson(Map<String, dynamic> json) {
-    meta = json['meta'] != null ? new Meta.fromJson(json['meta']) : null;
     if (json['documents'] != null) {
-      documents = new List<Documents>();
+      documents = <Documents>[];
       json['documents'].forEach((v) {
         documents.add(new Documents.fromJson(v));
       });
     }
+    meta = json['meta'] != null ? new Meta.fromJson(json['meta']) : null;
   }
 
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = new Map<String, dynamic>();
-    if (this.meta != null) {
-      data['meta'] = this.meta.toJson();
-    }
     if (this.documents != null) {
       data['documents'] = this.documents.map((v) => v.toJson()).toList();
     }
-    return data;
-  }
-}
-
-class Meta {
-  bool isEnd; //마지막페이지인지
-  int pageableCount; //노출가능 책 수
-  int totalCount; //검색된 책 수
-
-  Meta({this.isEnd, this.pageableCount, this.totalCount});
-
-  Meta.fromJson(Map<String, dynamic> json) {
-    isEnd = json['is_end'];
-    pageableCount = json['pageable_count'];
-    totalCount = json['total_count'];
-  }
-
-  Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
-    data['is_end'] = this.isEnd;
-    data['pageable_count'] = this.pageableCount;
-    data['total_count'] = this.totalCount;
+    if (this.meta != null) {
+      data['meta'] = this.meta.toJson();
+    }
     return data;
   }
 }
 
 class Documents {
+  String title;
   List<String> authors;
+  List<String> translators;
+  String isbn;
   String contents;
   String datetime;
-  String isbn;
-  int price;
   String publisher;
+  String thumbnail;
+  int price;
   int salePrice;
   String status;
-  String thumbnail;
-  String title;
-  List<String> translators;
   String url;
 
   Documents(
-      {this.authors,
+      {this.title,
+      this.authors,
+      this.translators,
+      this.isbn,
       this.contents,
       this.datetime,
-      this.isbn,
-      this.price,
       this.publisher,
+      this.thumbnail,
+      this.price,
       this.salePrice,
       this.status,
-      this.thumbnail,
-      this.title,
-      this.translators,
       this.url});
 
   Documents.fromJson(Map<String, dynamic> json) {
+    title = json['title'];
     authors = json['authors'].cast<String>();
+    translators = json['translators'].cast<String>();
+    isbn = json['isbn'];
     contents = json['contents'];
     datetime = json['datetime'];
-    isbn = json['isbn'];
-    price = json['price'];
     publisher = json['publisher'];
+    thumbnail = json['thumbnail'];
+    price = json['price'];
     salePrice = json['sale_price'];
     status = json['status'];
-    thumbnail = json['thumbnail'];
-    title = json['title'];
-    translators = json['translators'].cast<String>();
     url = json['url'];
   }
 
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = new Map<String, dynamic>();
+    data['title'] = this.title;
     data['authors'] = this.authors;
+    data['translators'] = this.translators;
+    data['isbn'] = this.isbn;
     data['contents'] = this.contents;
     data['datetime'] = this.datetime;
-    data['isbn'] = this.isbn;
-    data['price'] = this.price;
     data['publisher'] = this.publisher;
+    data['thumbnail'] = this.thumbnail;
+    data['price'] = this.price;
     data['sale_price'] = this.salePrice;
     data['status'] = this.status;
-    data['thumbnail'] = this.thumbnail;
-    data['title'] = this.title;
-    data['translators'] = this.translators;
     data['url'] = this.url;
+    return data;
+  }
+}
+
+class Meta {
+  int totalCount;
+  int pageableCount;
+  bool isEnd;
+
+  Meta({this.totalCount, this.pageableCount, this.isEnd});
+
+  Meta.fromJson(Map<String, dynamic> json) {
+    totalCount = json['total_count'];
+    pageableCount = json['pageable_count'];
+    isEnd = json['is_end'];
+  }
+
+  Map<String, dynamic> toJson() {
+    final Map<String, dynamic> data = new Map<String, dynamic>();
+    data['total_count'] = this.totalCount;
+    data['pageable_count'] = this.pageableCount;
+    data['is_end'] = this.isEnd;
     return data;
   }
 }

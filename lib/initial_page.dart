@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:sharing_library/model/kakao_book_search_model.dart';
 
-import 'api/book_api.dart';
 import 'my_page.dart';
 
 class InitialPage extends StatefulWidget {
@@ -10,10 +8,6 @@ class InitialPage extends StatefulWidget {
 }
 
 class _InitialPageState extends State<InitialPage> {
-  _searchBook() {
-    Future<KakaoBookSearchModel> bookList = searchBook("author", "윤성우");
-  }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(

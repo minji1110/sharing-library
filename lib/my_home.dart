@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+import 'api/book_api.dart';
 import 'model/kakao_book_search_model.dart';
 
 class MyHome extends StatefulWidget {
@@ -8,6 +9,14 @@ class MyHome extends StatefulWidget {
 }
 
 class _MyHomeState extends State<MyHome> {
+  final _textController = TextEditingController();
+  final _focusNode = FocusNode();
+  String _searchValue;
+
+  _searchBook(String title) {
+    Future<KakaoBookSearchModel> searchedBooks = searchBook(title);
+  }
+
   var list = [
     Documents(
         authors: ["기시미이치로"],
@@ -54,20 +63,35 @@ class _MyHomeState extends State<MyHome> {
         thumbnail:
             "https://search1.kakaocdn.net/thumb/R120x174.q85/?fname=http%3A%2F%2Ft1.daumcdn.net%2Flbook%2Fimage%2F1467038"),
   ];
+
+  @override
+  void initState() {
+    super.initState();
+    _searchValue = _textController.value.text;
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+    _textController.dispose();
+    _focusNode.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+        backgroundColor: Colors.brown.shade400,
         body: SafeArea(
-      child: Container(
-          padding: EdgeInsets.only(left: 15.0, right: 15.0),
-          child: Column(
-            children: [
-              _buildTitle(),
-              SizedBox(height: 20.0),
-              Expanded(child: _buildBookList())
-            ],
-          )),
-    ));
+          child: Container(
+              padding: EdgeInsets.only(left: 15.0, right: 15.0),
+              child: Column(
+                children: [
+                  _buildTitle(),
+                  SizedBox(height: 20.0),
+                  Expanded(child: _buildBookList())
+                ],
+              )),
+        ));
   }
 
   _buildTitle() {
@@ -78,16 +102,17 @@ class _MyHomeState extends State<MyHome> {
               text: TextSpan(
                   text: '김민지',
                   style: TextStyle(
-                      fontSize: 25.0,
-                      fontWeight: FontWeight.w700,
-                      fontFamily: 'GowunDodum',
-                      color: Colors.brown),
+                    fontSize: 25.0,
+                    fontWeight: FontWeight.w700,
+                    fontFamily: 'GowunDodum',
+                    color: Colors.brown.shade900,
+                  ),
                   children: [
                 TextSpan(
                     text: ' 님의 서재',
                     style: TextStyle(fontSize: 18.0, fontFamily: 'GowunDodum'))
               ])),
-          SizedBox(height: 25.0),
+          SizedBox(height: 15.0),
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
@@ -125,11 +150,12 @@ class _MyHomeState extends State<MyHome> {
           child: ClipRRect(
             borderRadius: BorderRadius.circular(10.0),
             child: Container(
-                color: Colors.grey.withOpacity(0.4),
+                color: Colors.grey.withOpacity(0.7),
                 child: InkWell(
+                  onTap: _showSearchDialog,
                   child: Icon(
                     Icons.add_circle_outline,
-                    color: Colors.grey.withOpacity(0.8),
+                    color: Colors.black,
                     size: 40.0,
                   ),
                 )),
@@ -138,11 +164,11 @@ class _MyHomeState extends State<MyHome> {
         SizedBox(
           height: 3.0,
         ),
-        Text('책 추가하기',
-            style: TextStyle(
-                fontSize: 12.0,
-                fontWeight: FontWeight.w700,
-                fontFamily: 'GowunDodum'))
+        // Text('책 추가하기',
+        //     style: TextStyle(
+        //         fontSize: 12.0,
+        //         fontWeight: FontWeight.w700,
+        //         fontFamily: 'GowunDodum'))
       ],
     );
   }
@@ -188,6 +214,69 @@ class _MyHomeState extends State<MyHome> {
         )
       ],
     );
+  }
+
+  _showSearchDialog() {
+    showDialog(
+        context: context,
+        builder: (context) {
+          return Dialog(
+              insetPadding: EdgeInsets.all(10),
+              shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(15.0)),
+              child: Container(
+                height: 500,
+                child: Column(children: [
+                  Container(
+                    alignment: Alignment.centerRight,
+                    child: IconButton(
+                      icon: Icon(Icons.cancel),
+                      onPressed: () {
+                        _textController.clear();
+                        Navigator.pop(context);
+                      },
+                    ),
+                  ),
+                  Container(
+                      padding: EdgeInsets.all(10),
+                      child: TextField(
+                        controller: _textController,
+                        focusNode: _focusNode,
+                        onChanged: (value) {
+                          setState(() {
+                            _searchValue = value;
+                            print('검색어 : $_searchValue');
+                          });
+                        },
+                        decoration: InputDecoration(
+                          // suffixIcon: Row(
+                          //   mainAxisAlignment: MainAxisAlignment.end,
+                          //   children: [
+                          //     IconButton(
+                          //       onPressed: () {
+                          //         print('검색!');
+                          //       },
+                          //       // constraints: BoxConstraints(),
+                          //       icon: Icon(
+                          //         Icons.search,
+                          //         color: Colors.brown,
+                          //       ),
+                          //     ),
+                          //   ],
+                          // ),
+                          enabledBorder: OutlineInputBorder(
+                            borderSide:
+                                BorderSide(color: Colors.brown, width: 2.0),
+                          ),
+                          focusedBorder: OutlineInputBorder(
+                              borderSide:
+                                  BorderSide(color: Colors.brown, width: 2.0)),
+                          // contentPadding: EdgeInsets.all(10),
+                        ),
+                      ))
+                ]),
+              ));
+        });
   }
 
   commonTextStyle(String text) {
