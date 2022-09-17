@@ -1,14 +1,14 @@
 class KakaoBookSearchModel {
-  List<Documents> documents;
-  Meta meta;
+  List<KakaoSearch>? documents;
+  Meta? meta;
 
   KakaoBookSearchModel({this.documents, this.meta});
 
   KakaoBookSearchModel.fromJson(Map<String, dynamic> json) {
     if (json['documents'] != null) {
-      documents = <Documents>[];
+      documents = <KakaoSearch>[];
       json['documents'].forEach((v) {
-        documents.add(new Documents.fromJson(v));
+        documents?.add(new KakaoSearch.fromJson(v));
       });
     }
     meta = json['meta'] != null ? new Meta.fromJson(json['meta']) : null;
@@ -17,30 +17,30 @@ class KakaoBookSearchModel {
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = new Map<String, dynamic>();
     if (this.documents != null) {
-      data['documents'] = this.documents.map((v) => v.toJson()).toList();
+      data['documents'] = this.documents!.map((v) => v.toJson()).toList();
     }
     if (this.meta != null) {
-      data['meta'] = this.meta.toJson();
+      data['meta'] = this.meta!.toJson();
     }
     return data;
   }
 }
 
-class Documents {
-  String title;
-  List<String> authors;
-  List<String> translators;
-  String isbn;
-  String contents;
-  String datetime;
-  String publisher;
-  String thumbnail;
-  int price;
-  int salePrice;
-  String status;
-  String url;
+class KakaoSearch {
+  String? title;
+  List<String>? authors;
+  List<String>? translators;
+  String? isbn;
+  String? contents;
+  String? datetime;
+  String? publisher;
+  String? thumbnail;
+  int? price;
+  int? salePrice;
+  String? status;
+  String? url;
 
-  Documents(
+  KakaoSearch(
       {this.title,
       this.authors,
       this.translators,
@@ -54,7 +54,7 @@ class Documents {
       this.status,
       this.url});
 
-  Documents.fromJson(Map<String, dynamic> json) {
+  KakaoSearch.fromJson(Map<String, dynamic> json) {
     title = json['title'];
     authors = json['authors'].cast<String>();
     translators = json['translators'].cast<String>();
@@ -88,9 +88,9 @@ class Documents {
 }
 
 class Meta {
-  int totalCount;
-  int pageableCount;
-  bool isEnd;
+  int? totalCount;
+  int? pageableCount;
+  bool? isEnd;
 
   Meta({this.totalCount, this.pageableCount, this.isEnd});
 

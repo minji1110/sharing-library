@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:sharing_library/common/common_color.dart';
+import 'package:sharing_library/common/common_text_style.dart';
 
-import 'my_page.dart';
+import 'main_tab_bar.dart';
 
 class InitialPage extends StatefulWidget {
   @override
@@ -33,22 +35,13 @@ class _InitialPageState extends State<InitialPage> {
                   ),
                 ]),
               ),
-              SizedBox(
-                height: 20.0,
-              ),
+              SizedBox(height: 20.0),
               TextButton(
-                onPressed: () {
-                  Navigator.of(context)
-                      .push(MaterialPageRoute(builder: (context) => MyPage()));
-                },
-                child: Text(
-                  '내 서재로 이동하기',
-                  style: TextStyle(
-                      color: Colors.black,
-                      fontWeight: FontWeight.bold,
-                      fontSize: 20.0),
-                ),
-              )
+                  onPressed: () {
+                    Navigator.of(context).push(
+                        MaterialPageRoute(builder: (context) => MainTabBar()));
+                  },
+                  child: commonBoldText('내 서재로 이동하기', 20.0, lightBrown)),
             ],
           ),
         ),
