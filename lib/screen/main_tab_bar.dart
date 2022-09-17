@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:sharing_library/common/common_color.dart';
+import 'package:sharing_library/common/common_text_style.dart';
 import 'package:sharing_library/provider/my_home_provider.dart';
 import 'package:sharing_library/screen/my_home/my_home_view.dart';
 import 'package:sharing_library/screen/my_home/my_home_view_model.dart';
@@ -65,11 +66,11 @@ class _MainTabBarState extends State<MainTabBar>
       children: [
         Icon(
           icons,
-          size: 28.0,
+          size: 25.0,
         ),
         Text(
           label,
-          style: TextStyle(fontSize: 12.0),
+          style: TextStyle(fontSize: 12.0, fontFamily: mainFont),
         )
       ],
     ));

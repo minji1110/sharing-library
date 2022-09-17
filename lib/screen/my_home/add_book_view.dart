@@ -9,8 +9,9 @@ import '../../provider/my_home_provider.dart';
 
 class AddBookView extends StatelessWidget {
   AddBookView({Key? key}) : super(key: key);
-  final TextEditingController textEditingController = TextEditingController();
-  final FocusNode focusNode = FocusNode();
+  TextEditingController _textEditingController = TextEditingController();
+  FocusNode _focusNode = FocusNode();
+  ScrollController _scrollController = ScrollController();
 
   @override
   Widget build(BuildContext context) {
@@ -23,6 +24,7 @@ class AddBookView extends StatelessWidget {
         appBar: AppBar(
           title: commonBoldText('책 추가하기', 20.0, Colors.black),
           backgroundColor: lightBrown,
+          elevation: 0.0,
           leading: GestureDetector(
             child: Icon(
               Icons.arrow_back_ios,
@@ -40,7 +42,7 @@ class AddBookView extends StatelessWidget {
                 focusScopeNode.focusedChild != null) {
               FocusManager.instance.primaryFocus?.unfocus();
             }
-            focusNode.unfocus();
+            _focusNode.unfocus();
           },
           child: Container(
             padding: EdgeInsets.only(top: 15.0, left: 15.0, right: 15.0),
@@ -57,7 +59,8 @@ class AddBookView extends StatelessWidget {
   }
 
   Widget _searchSection() {
-    return Consumer<MyHomeViewModel>(builder: (context, provider, child) {
+    return Consumer2<MyHomeViewModel, MyHomeProvider>(
+        builder: (context, viewModel, provider, child) {
       return Container(
         margin: EdgeInsets.only(top: 8.0),
         decoration: BoxDecoration(
@@ -65,18 +68,18 @@ class AddBookView extends StatelessWidget {
           borderRadius: BorderRadius.circular(32),
         ),
         child: TextField(
-          controller: textEditingController,
-          focusNode: focusNode,
-          onChanged: (value) => provider.setSearchValue(value),
-          onSubmitted: (value) => provider.onSearchTapped(),
+          controller: _textEditingController,
+          focusNode: _focusNode,
+          onChanged: (value) => viewModel.setSearchValue(value),
+          onSubmitted: (value) => provider.onSearchTapped(value),
           decoration: InputDecoration(
             hintStyle: TextStyle(fontSize: 14),
             hintText: '책 제목, 작가, isbn 으로 검색할 수 있습니다.',
             suffixIcon: IconButton(
                 icon: Icon(Icons.search),
                 onPressed: () {
-                  provider.onSearchTapped();
-                  focusNode.unfocus();
+                  provider.onSearchTapped(_textEditingController.value.text);
+                  _focusNode.unfocus();
                 }),
             border: InputBorder.none,
             contentPadding: EdgeInsets.all(15),
@@ -87,7 +90,7 @@ class AddBookView extends StatelessWidget {
   }
 
   Widget _searchResultSection() {
-    return Consumer<MyHomeViewModel>(builder: (context, provider, child) {
+    return Consumer<MyHomeProvider>(builder: (context, provider, child) {
       return provider.isFetched
           // 검색 완료
           ? (provider.kakaoSearchList!.isNotEmpty
@@ -96,7 +99,8 @@ class AddBookView extends StatelessWidget {
                     _totalCountText(
                         provider.kakaoBookSearchModel!.meta!.totalCount!),
                     Expanded(
-                        child: _buildSearchBookList(provider.kakaoSearchList!))
+                        child: _buildSearchBookList(
+                            context, provider.kakaoSearchList!))
                   ]),
                 )
               : Center(
@@ -111,12 +115,23 @@ class AddBookView extends StatelessWidget {
               : Center(
                   child: commonBoldText(
                       '원하는 책을 검색해 내 서재에 추가해보세요 :)', 16.0, Colors.black38));
-      ;
     });
   }
 
-  Widget _buildSearchBookList(List<KakaoSearch> bookList) {
+  Widget _buildSearchBookList(
+      BuildContext context, List<KakaoSearch> bookList) {
+    _scrollController.addListener(() {
+      if (_scrollController.offset >=
+              _scrollController.position.maxScrollExtent &&
+          !_scrollController.position.outOfRange) {
+        print('load more');
+        Provider.of<MyHomeProvider>(context, listen: false)
+            .fetchMoreData(_textEditingController.value.text);
+      }
+    });
+
     return ListView.builder(
+      controller: _scrollController,
       itemBuilder: (context, index) {
         KakaoSearch book = bookList[index];
         return Column(children: [

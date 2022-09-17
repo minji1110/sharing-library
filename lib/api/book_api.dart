@@ -10,8 +10,8 @@ import '../model/book_list_model.dart';
 final _hostUrl = HOST_URL;
 
 // kakao 책검색
-Future<KakaoBookSearchModel> searchBook(String query) async {
-  final requestUri = '$_hostUrl/book/search?query=$query';
+Future<KakaoBookSearchModel> searchBook(String query, int page) async {
+  final requestUri = '$_hostUrl/book/search?query=$query&page=$page&size=20';
   final response = await http.get(Uri.parse(requestUri));
 
   printResult(requestUri, response);

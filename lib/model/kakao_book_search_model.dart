@@ -90,21 +90,21 @@ class KakaoSearch {
 class Meta {
   int? totalCount;
   int? pageableCount;
-  bool? isEnd;
+  bool? end;
 
-  Meta({this.totalCount, this.pageableCount, this.isEnd});
+  Meta({this.totalCount, this.pageableCount, this.end});
 
   Meta.fromJson(Map<String, dynamic> json) {
     totalCount = json['total_count'];
     pageableCount = json['pageable_count'];
-    isEnd = json['is_end'];
+    end = json['_end'];
   }
 
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = new Map<String, dynamic>();
     data['total_count'] = this.totalCount;
     data['pageable_count'] = this.pageableCount;
-    data['is_end'] = this.isEnd;
+    data['_end'] = this.end;
     return data;
   }
 }
