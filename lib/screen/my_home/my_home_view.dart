@@ -80,7 +80,7 @@ class MyHomeView extends StatelessWidget {
                     childAspectRatio: MediaQuery.of(context).size.width /
                         (MediaQuery.of(context).size.height / 1.3),
                     crossAxisCount: 3,
-                    crossAxisSpacing: 30.0,
+                    crossAxisSpacing: 20.0,
                     mainAxisSpacing: 10.0),
                 itemCount: bookList.length + 1,
                 itemBuilder: (context, index) {
@@ -99,7 +99,7 @@ class MyHomeView extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Container(
-          width: MediaQuery.of(context).size.width / 3,
+          width: MediaQuery.of(context).size.width / 2,
           height: MediaQuery.of(context).size.height / 6.5,
           decoration: BoxDecoration(
             boxShadow: [
@@ -117,8 +117,10 @@ class MyHomeView extends StatelessWidget {
             ),
           ),
         ),
-        SizedBox(
-          height: 3.0,
+        Expanded(
+          child: SizedBox(
+            height: 3.0,
+          ),
         ),
         Text(
           book.bookTitle!,
@@ -146,8 +148,13 @@ class MyHomeView extends StatelessWidget {
                 color: Colors.black12,
                 child: InkWell(
                   onTap: () {
-                    Navigator.push(context,
-                        MaterialPageRoute(builder: (context) => AddBookView()));
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => AddBookView())).then(
+                        (value) =>
+                            Provider.of<MyHomeProvider>(context, listen: false)
+                                .fetchBookList(userId));
                   },
                   child: Icon(
                     Icons.add_circle_outline,

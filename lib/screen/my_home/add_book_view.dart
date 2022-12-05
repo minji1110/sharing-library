@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:sharing_library/common/common_color.dart';
 import 'package:sharing_library/common/common_text_style.dart';
+import 'package:sharing_library/common/screen_size.dart';
 import 'package:sharing_library/screen/my_home/my_home_view_model.dart';
 
 import '../../model/kakao_book_search_model.dart';
@@ -9,6 +10,9 @@ import '../../provider/my_home_provider.dart';
 
 class AddBookView extends StatelessWidget {
   AddBookView({Key? key}) : super(key: key);
+  final ScreenSize screenSize = ScreenSize();
+  final userId = 1;
+
   TextEditingController _textEditingController = TextEditingController();
   FocusNode _focusNode = FocusNode();
   ScrollController _scrollController = ScrollController();
@@ -203,7 +207,12 @@ class AddBookView extends StatelessWidget {
                           Container(
                             alignment: Alignment.centerRight,
                             child: ElevatedButton(
-                              onPressed: () {},
+                              onPressed: () {
+                                Provider.of<MyHomeProvider>(context,
+                                        listen: false)
+                                    .addBook(userId, book);
+                                _showDialog(context, book);
+                              },
                               style: ElevatedButton.styleFrom(
                                   elevation: 0.0,
                                   primary: lightBrown,
@@ -235,6 +244,90 @@ class AddBookView extends StatelessWidget {
       alignment: Alignment.centerLeft,
       child:
           commonBoldText(' $totalCount 건의 검색결과가 있습니다.', 13.0, Colors.black38),
+    );
+  }
+
+  _showDialog(BuildContext context, KakaoSearch book) {
+    MyHomeProvider provider =
+        Provider.of<MyHomeProvider>(context, listen: false);
+
+    return showDialog(
+        context: context,
+        builder: (context2) {
+          return ChangeNotifierProvider.value(
+              value: provider, child: _alterDialog(context));
+        });
+  }
+
+  _alterDialog(BuildContext context) {
+    return AlertDialog(
+      shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.all(Radius.circular(25.0))),
+      contentPadding: EdgeInsets.only(top: 10.0),
+      content: new Container(
+        width: 320.0,
+        height: 200.0,
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Center(child: commonBoldText('책을 다 읽었나요?', 22.0, Colors.black)),
+            SizedBox(height: 20.0),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: [
+                Container(
+                  width: 120.0,
+                  height: 100.0,
+                  child: TextButton(
+                    onPressed: () {
+                      Navigator.of(context).pop();
+                    },
+                    style: TextButton.styleFrom(
+                      primary: darkBrown,
+                      side: BorderSide(color: darkBrown, width: 4),
+                      shape: const RoundedRectangleBorder(
+                          borderRadius: BorderRadius.all(Radius.circular(25))),
+                    ),
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        commonBoldText('다 읽었어요!', 16.0, darkBrown),
+                        SizedBox(height: 5.0),
+                        commonRegularText('책 평가 화면으로\n이동합니다.', 12.0, darkBrown)
+                      ],
+                    ),
+                  ),
+                ),
+                Container(
+                  width: 120.0,
+                  height: 100.0,
+                  child: TextButton(
+                    onPressed: () {
+                      // Provider.of<MyHomeProvider>(context,listen: false).fetchBookList(userId);
+                      Navigator.of(context).pop();
+                      Navigator.of(context).pop();
+                    },
+                    style: TextButton.styleFrom(
+                      primary: darkBrown,
+                      side: BorderSide(color: Colors.grey, width: 4),
+                      shape: const RoundedRectangleBorder(
+                          borderRadius: BorderRadius.all(Radius.circular(25))),
+                    ),
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        commonBoldText('아직이요!', 16.0, Colors.grey),
+                        SizedBox(height: 5.0),
+                        commonRegularText('내 서재에\n저장됩니다.', 12.0, Colors.grey)
+                      ],
+                    ),
+                  ),
+                )
+              ],
+            ),
+          ],
+        ),
+      ),
     );
   }
 }

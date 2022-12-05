@@ -1,8 +1,10 @@
 import 'dart:async';
 import 'dart:convert';
 
+import 'package:flutter/cupertino.dart';
 import 'package:http/http.dart' as http;
 import 'package:sharing_library/api/api_server_info.dart';
+import 'package:sharing_library/model/book_model.dart';
 import 'package:sharing_library/model/kakao_book_search_model.dart';
 
 import '../model/book_list_model.dart';
@@ -40,8 +42,31 @@ Future<BookListModel?> getBooksByUser(int userId) async {
   return null;
 }
 
+//책 저장하기
+Future<BookModel?> addOneBook(int userId, KakaoSearch kakaoSearch) async {
+  Map<String, String> headers = {'Content-Type': 'application/json'};
+  final requestUri = '$_hostUrl/book/$userId';
+  final response = await http.post(Uri.parse(requestUri),
+      headers: headers, body: json.encode(kakaoSearch));
+
+  printResult(requestUri, response);
+
+  if (response.statusCode == 200) {
+    var result = json.decode(utf8.decode(response.bodyBytes));
+
+    if (result['success'])
+      return BookModel.fromJson(result);
+    else
+      return result['message'];
+  }
+  return null;
+}
+
 void printResult(requestUri, response) {
   print('요청: ' + requestUri);
   print('응답: ' + response.statusCode.toString());
-  print(json.decode(utf8.decode(response.bodyBytes)));
+
+  var decoded = const JsonDecoder().convert(utf8.decode(response.bodyBytes));
+  var reformatted = const JsonEncoder.withIndent(' ').convert(decoded);
+  debugPrint('response body : $reformatted');
 }

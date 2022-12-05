@@ -87,4 +87,15 @@ class MyHomeProvider extends ChangeNotifier {
       notifyListeners();
     }
   }
+
+  // ================ addBook
+  BookModel? _addedBook;
+  BookModel? get addedBook => _addedBook;
+
+  void addBook(userId, KakaoSearch book) async {
+    BookModel? model = await addOneBook(userId, book);
+    _addedBook = model;
+
+    notifyListeners();
+  }
 }
